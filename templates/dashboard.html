@@ -38,6 +38,7 @@
       body {
         margin: 0;
         overflow: hidden;
+        padding: 0;
         font-family: "IBM Plex Sans KR", "Apple SD Gothic Neo", sans-serif;
         color: var(--ink);
         background:
@@ -48,11 +49,11 @@
 
       .wrap {
         max-width: 1500px;
-        margin: 0 auto;
-        padding: 10px;
-        min-height: 100vh;
+        margin: 13px auto 13px;
+        padding: 0 8px;
+        min-height: auto;
         display: block;
-        overflow: visible;
+        overflow: hidden;
       }
 
       .headline-band {
@@ -60,7 +61,9 @@
         grid-template-columns: minmax(360px, 0.74fr) minmax(620px, 1.26fr);
         gap: 12px;
         align-items: stretch;
-        margin-bottom: 14px;
+        padding: 0 14px;
+        margin-top: 0;
+        margin-bottom: 12px;
       }
       .topbar {
         display: grid;
@@ -68,6 +71,9 @@
         gap: 12px;
         align-items: stretch;
         min-height: 0;
+        padding-left: 14px;
+        padding-right: 14px;
+        padding-bottom: 0;
       }
 
       .project-intro,
@@ -168,19 +174,19 @@
         border-radius: 18px;
         box-shadow: var(--shadow);
         backdrop-filter: blur(12px);
-        padding: 16px;
+        padding: 13px 16px 20px;
         display: grid;
-        grid-template-rows: auto 1fr;
-        gap: 12px;
-        overflow: hidden;
-        min-height: 470px;
+        grid-template-rows: auto auto;
+        gap: 5px;
+        overflow: visible;
+        min-height: 410px;
       }
       .evidence-head {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0;
-        margin-bottom: 2px;
+        margin-bottom: 0;
       }
       .evidence-title {
         width: 100%;
@@ -201,7 +207,7 @@
       }
       .evidence-layout {
         display: grid;
-        grid-template-columns: minmax(280px, 0.9fr) minmax(190px, 0.54fr) minmax(0, 1.56fr);
+        grid-template-columns: minmax(280px, 0.9fr) minmax(200px, 0.60fr) minmax(0, 1.5fr);
         gap: 10px;
         align-items: stretch;
       }
@@ -218,7 +224,7 @@
         padding: 10px;
         min-width: 0;
         overflow: hidden;
-        height: 95%;
+        height: auto;
       }
       .funnel-shell {
         background: rgba(255,255,255,0.86);
@@ -257,7 +263,7 @@
         height: 100%;
       }
       .evidence-panel .summary-card {
-        height: 95%;
+        height: auto;
         align-self: stretch;
       }
       .summary-side {
@@ -622,11 +628,11 @@
         align-content: start;
       }
       .summary-chart-card {
-        padding: 10px;
+        padding: 14px;
         border-radius: 15px;
         border: 1px solid rgba(18, 32, 42, 0.08);
         background: rgba(255,255,255,0.9);
-        min-height: 250px;
+        min-height: 265px;
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
@@ -668,7 +674,7 @@
         overflow: hidden;
         min-height: 0;
         height: 88%;
-        width: 88%;
+        width: 80%;
         justify-self: center;
         align-self: center;
         display: flex;
@@ -901,6 +907,8 @@
         color: var(--muted);
         text-align: right;
       }
+
+      
       .metric-fill {
         position: absolute;
         inset: 0 auto 0 0;
@@ -1626,8 +1634,6 @@
       }
 
       @media (max-width: 1380px) {
-        body { overflow: auto; }
-        .wrap { height: auto; }
         .topbar { grid-template-columns: 1fr; }
         .evidence-layout { grid-template-columns: 1fr; }
         .focus-panel { grid-template-columns: 1fr; width: 100%; }
@@ -1635,14 +1641,12 @@
         .summary-grid { grid-template-columns: 1fr; }
         .summary-visual-grid { grid-template-columns: 1fr; }
         .funnel-chart { grid-template-columns: 1fr 1fr; }
-        .app-shell { grid-template-columns: 280px minmax(0, 1fr); height: auto; }
-        .detail-panel { grid-column: 1 / -1; height: auto; }
-        .shell-panel, .list-panel { height: auto; }
-        .list-frame, .panel-scroll { height: auto; }
+        .app-shell { grid-template-columns: 280px minmax(0, 1fr); }
+        .detail-panel { grid-column: 1 / -1; }
       }
 
       @media (max-width: 980px) {
-        .app-shell, .hero-stat-row { grid-template-columns: 1fr; height: auto; }
+        .app-shell, .hero-stat-row { grid-template-columns: 1fr; }
         .focus-panel { padding: 20px 18px; }
         .focus-topic-text { font-size: 2.15rem; }
         .focus-meta-strip { grid-template-columns: 1fr; }
@@ -1650,8 +1654,6 @@
         .focus-market-row { grid-template-columns: minmax(0, 1fr) 72px auto; gap: 10px; }
         .focus-cta-copy strong { font-size: 1.34rem; }
         .funnel-chart { grid-template-columns: 1fr; }
-        .shell-panel, .list-panel, .detail-panel { height: auto; }
-        .list-frame, .panel-scroll { height: auto; }
       }
     
 
@@ -1682,7 +1684,7 @@
       .summary-tabs {
         display: inline-flex;
         flex-wrap: nowrap;
-        gap: 8px;
+        gap: 25px;
         justify-content: flex-end;
       }
       .summary-tabs-inline {
@@ -1697,13 +1699,13 @@
       }
       .single-pane-card,
       .single-pane-card.distribution-card {
-        height: 300px;
+        height: auto;
         width: 80%;
         justify-self: center;
       }
       .summary-pane .summary-chart-card,
       .summary-pane .distribution-card {
-        width: 80%;
+        width: 85%;
         justify-self: center;
       }
       .collapse-back-button {
@@ -1736,7 +1738,7 @@
       .summary-tabs {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 6px;
+        gap: 10px;
       }
       .summary-tab {
         border: 1px solid rgba(18, 32, 42, 0.08);
@@ -1761,7 +1763,7 @@
       .summary-pane.active { display: block; }
       .single-pane-card,
       .single-pane-card.distribution-card {
-        height: 250px;
+        height: 264px;
       }
       .focus-band {
         margin-bottom: 0;
@@ -1781,6 +1783,7 @@
         margin: 0 auto;
         position: relative;
         overflow: hidden;
+        padding: 20px;
       }
       .focus-panel::before {
         content: "";
@@ -1924,10 +1927,10 @@
       }
       .focus-points {
         display: grid;
-        gap: 16px;
+        gap: 14px;
         margin-top: 0;
         max-width: none;
-        padding-top: 8px;
+        padding-top: 10px;
         border-top: 1px solid rgba(223, 227, 232, 0.92);
       }
       .focus-point {
@@ -2067,7 +2070,7 @@
         grid-template-columns: 38px minmax(0, 1fr) 12px;
         gap: 8px;
         align-items: center;
-        width: 60%;
+        width: 63%;
         min-width: 156px;
         text-align: left;
         justify-self: center;
@@ -2415,6 +2418,7 @@
     <script id="issues-data" type="application/json">{{ issues_json | safe }}</script>
     <script id="runtime-data" type="application/json">{{ runtime_status | tojson | safe }}</script>
     <script id="market-pulse-data" type="application/json">{{ market_pulse | tojson | safe }}</script>
+    
     <script>
       let issuesData = JSON.parse(document.getElementById("issues-data").textContent);
       let runtimeData = JSON.parse(document.getElementById("runtime-data").textContent);
@@ -2574,10 +2578,27 @@
         });
       }
 
+      // function setExplorerOpen(open) {
+      //   state.explorerOpen = open;
+      //   const shell = document.getElementById('explorer-shell');
+      //   shell.classList.toggle('collapsed', !open);
+      // }
       function setExplorerOpen(open) {
         state.explorerOpen = open;
+
         const shell = document.getElementById('explorer-shell');
+        const headline = document.querySelector('.headline-band');
+        const topbar = document.querySelector('.topbar');
+
         shell.classList.toggle('collapsed', !open);
+
+        if (headline) {
+          headline.style.display = open ? 'none' : 'grid';
+        }
+
+        if (topbar) {
+          topbar.style.display = open ? 'none' : 'grid';
+        }
       }
 
       function renderFeaturedIssue() {
@@ -3492,12 +3513,10 @@
         if (!featured) return;
         setExplorerOpen(true);
         openIssue(featured.id);
-        document.getElementById('explorer-shell').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       document.getElementById('collapse-back-button').addEventListener('click', () => {
         setExplorerOpen(false);
-        document.getElementById('focus-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       document.querySelectorAll("[data-filter-keyword]").forEach((chip) => {
