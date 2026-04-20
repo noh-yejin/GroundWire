@@ -44,6 +44,9 @@ class Settings:
     crawl_timeout_seconds: int = 8
     crawl_max_articles_per_run: int = 10
     llm_timeout_seconds: int = 25
+    max_parallel_issue_analysis: int = 3
+    max_second_pass_reviews: int = 1
+    enable_llm_claim_verification: bool = False
     openai_api_key: str | None = None
     openai_model: str = "gpt-5.4-mini"
     embedding_model: str = "text-embedding-3-small"
@@ -142,6 +145,9 @@ settings = Settings(
     crawl_timeout_seconds=int(os.getenv("CRAWL_TIMEOUT_SECONDS", "8")),
     crawl_max_articles_per_run=int(os.getenv("CRAWL_MAX_ARTICLES_PER_RUN", "10")),
     llm_timeout_seconds=int(os.getenv("LLM_TIMEOUT_SECONDS", "25")),
+    max_parallel_issue_analysis=int(os.getenv("MAX_PARALLEL_ISSUE_ANALYSIS", "3")),
+    max_second_pass_reviews=int(os.getenv("MAX_SECOND_PASS_REVIEWS", "1")),
+    enable_llm_claim_verification=os.getenv("ENABLE_LLM_CLAIM_VERIFICATION", "false").lower() == "true",
     openai_api_key=os.getenv("OPENAI_API_KEY"),
     openai_model=os.getenv("OPENAI_MODEL", "gpt-5.4-mini"),
     embedding_model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small"),

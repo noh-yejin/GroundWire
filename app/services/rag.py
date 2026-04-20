@@ -55,7 +55,7 @@ class OpenAIEmbeddingStore:
     def __init__(self) -> None:
         if OpenAI is None or not settings.openai_api_key:
             raise RuntimeError("OpenAI embedding client is unavailable")
-        self.client = OpenAI(api_key=settings.openai_api_key, timeout=settings.llm_timeout_seconds)
+        self.client = OpenAI(api_key=settings.openai_api_key, timeout=settings.llm_timeout_seconds, max_retries=0)
         self.documents: list[VectorDocument] = []
 
     def add_articles(self, articles: list[Article]) -> None:
@@ -109,10 +109,15 @@ class EvidenceRetriever:
         top_k: int = 12,
         corpus_articles: list[Article] | None = None,
     ) -> list[EvidenceSnippet]:
-        store = self._build_store()
         article_pool = self._merge_articles(articles, corpus_articles or [])
-        store.add_articles(article_pool)
-        retrieved = store.query(query_text, top_k=top_k)
+        store = self._build_store()
+        try:
+            store.add_articles(article_pool)
+            retrieved = store.query(query_text, top_k=top_k)
+        except Exception:
+            fallback_store = SimpleVectorStore()
+            fallback_store.add_articles(article_pool)
+            retrieved = fallback_store.query(query_text, top_k=top_k)
 
         evidence = [
             EvidenceSnippet(

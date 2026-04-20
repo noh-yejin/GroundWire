@@ -1,0 +1,24 @@
+[
+  {
+    "topic_contains": "cpi · 금리 · 인하",
+    "expected_status": "HOLD",
+    "min_grounded_ratio": 0.65,
+    "hold_reason_contains": "grounding 검증 부족",
+    "summary_terms_any": ["금리 인하", "CPI", "물가"],
+    "allowed_modes": ["combined_remote"]
+  },
+  {
+    "topic_contains": "개선 · 메모리 · 반도체",
+    "expected_status": "HOLD",
+    "hold_reason_contains": "grounding 검증 부족",
+    "summary_terms_any": ["메모리", "AI 인프라", "반도체"],
+    "allowed_modes": ["combined_remote"]
+  },
+  {
+    "topic_contains": "HBM · sk하이닉스 · 삼성전자",
+    "expected_status": "HOLD",
+    "hold_reason_contains": "기사 수 부족",
+    "summary_terms_any": ["HBM", "메모리", "실적 기대"],
+    "allowed_modes": ["lightweight_hold"]
+  }
+]

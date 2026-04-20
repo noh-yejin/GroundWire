@@ -1,124 +1,106 @@
-# Reliability-First News AI Agent
+# GroundWire
 
-국내외 뉴스를 수집하고, 유사 기사들을 하나의 이슈로 묶은 뒤, RAG 기반 근거 검증을 거쳐 웹 대시보드와 Slack으로 보고하는 신뢰성 중심 AI Agent MVP입니다.
+## 프로젝트 개요
 
-## Design Goal
+GroundWire는 국내외 주요 뉴스를 자동으로 수집하고, 비슷한 기사를 하나의 이슈로 묶은 뒤, 근거 기반 검증과 LLM 분석을 거쳐 웹 대시보드에 보여주는 `trust-first` 뉴스 분석 프로젝트입니다.
 
-이 프로젝트의 핵심은 "많이 요약하는 것"이 아니라 "근거가 있을 때만 말하는 것"입니다.
+이 프로젝트의 목표는 다음 과정을 안정적으로 자동화하는 것입니다.
 
-시스템은 아래 원칙을 강제합니다.
+- 뉴스 수집
+- 기사 정제
+- 이슈 클러스터링
+- 근거 추출 및 신뢰도 계산
+- LLM 기반 요약/포인트/claim 생성
+- `READY` / `HOLD` 판정
+- 웹 대시보드 제공
 
-- 단일 기사 요약보다 이슈 단위 분석 우선
-- 다중 출처 검증 우선
-- 출처 신뢰도 기반 필터링 적용
-- 근거 부족 시 응답 거절 또는 보류
-- LLM 호출은 백엔드에서만 수행
+## 활용 기술
 
-## Target Stack
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?logo=fastapi&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-gpt--5.4--mini-412991?logo=openai&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-Storage-003B57?logo=sqlite&logoColor=white)
+![Jinja2](https://img.shields.io/badge/Jinja2-Templates-B41717?logo=jinja&logoColor=white)
+![APScheduler](https://img.shields.io/badge/APScheduler-Scheduler-4B5563)
 
-- Backend: `FastAPI`
-- Scheduler: `APScheduler`
-- Collection: `feedparser`, `requests`, `BeautifulSoup`
-- Storage: `SQLite`
-- Retrieval layer: `Chroma-compatible abstraction`
-- Delivery: `Slack webhook`
+## 전체적인 개발 플로우
 
-## Architecture
+전체 흐름은 아래 순서로 구성됩니다.
 
-```text
-[RSS / Public APIs]
-        |
-        v
-[Collector]
-  - RSS polling
-  - API fetch
-  - selective crawling
-        |
-        v
-[Preprocessor]
-  - dedupe
-  - text cleanup
-  - low-quality filtering
-  - metadata persistence
-        |
-        v
-[Issue Clustering]
-  - title/body similarity
-  - issue grouping
-        |
-        v
-[RAG Reliability Layer]
-  - retrieval
-  - reranking
-  - source reliability filter
-  - grounding
-  - multi-source verification
-        |
-        +--> low evidence => HOLD / FALLBACK
-        |
-        v
-[LLM Analyzer]
-  - summary
-  - keywords
-  - sentiment
-  - risk points
-  - strict JSON
-        |
-        v
-[SQLite]
-        |
-        +--> [Dashboard]
-        |
-        +--> [Slack Reporter]
+1. 공개 RSS 기반으로 뉴스 기사를 수집합니다.
+2. 전처리를 통해 중복, 노이즈 텍스트, 품질이 낮은 기사를 정리합니다.
+3. 제목/본문 키워드, 숫자 정보, 시간 정보를 기준으로 유사 기사를 클러스터링합니다.
+4. 각 클러스터에서 근거 스니펫을 추출하고, 출처 다양성/최신성/교차 확인 정도를 기반으로 신뢰도를 계산합니다.
+5. 백엔드에서만 LLM을 호출해 summary, key points, atomic claims를 생성합니다.
+6. grounding 검증을 통해 각 claim이 실제 근거로 얼마나 지지되는지 확인합니다.
+7. 충분히 검증된 이슈는 `READY`, 애매한 이슈는 `HOLD`로 분류합니다.
+8. 최종 결과를 SQLite에 저장하고, 웹 대시보드/API로 제공합니다.
+
+## 핵심 로직
+
+이 프로젝트의 핵심 로직은 아래처럼 간단히 정리할 수 있습니다.
+
+1. 뉴스를 자동으로 수집하고 전처리합니다.
+2. 비슷한 기사들을 하나의 이슈로 클러스터링합니다.
+3. 근거 스니펫과 신뢰도 점수를 바탕으로 LLM이 summary, key points, claims를 생성합니다.
+4. grounding 검증을 거쳐 충분히 검증된 이슈는 `READY`, 그렇지 않은 이슈는 `HOLD`로 분류합니다.
+
+## 설치 및 실행 방법
+
+### 1. 코드 받기
+
+```bash
+git clone <repository-url>
+cd New\ project
 ```
 
-상세 설계 문서는 [docs/ARCHITECTURE.md](/Users/yejin/Documents/New%20project/docs/ARCHITECTURE.md:1)에 있습니다.
-
-## Reliability Policy
-
-- 최소 2개 이상의 독립 출처가 있어야 함
-- 중요한 주장마다 evidence snippet이 있어야 함
-- 출처 신뢰도 가중치가 낮은 기사만으로는 `READY` 불가
-- 근거 부족 시 요약 대신 `HOLD` 사유 반환
-- 프론트엔드는 저장된 결과만 조회하고, 직접 LLM API를 호출하지 않음
-
-## Scheduler Policy
-
-- 수집 작업: 10분 주기
-- 분석 작업: 1시간 주기
-- 필요 시 수동 실행 API 제공
-
-## Quick Start
+### 2. 가상환경 생성 및 활성화
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e .
-uvicorn app.main:app --reload
 ```
 
-브라우저:
+### 3. 의존성 설치
+
+`requirements.txt`를 사용하는 경우:
+
+```bash
+pip install -r requirements.txt
+```
+
+패키지 설치 방식으로 사용하는 경우:
+
+```bash
+pip install -e .
+```
+
+### 4. `.env` 파일 설정
+
+실행 전에 프로젝트 루트에 `.env` 파일을 만들고 아래처럼 값을 넣어주면 됩니다.
+
+```env
+OPENAI_API_KEY=your_api_key_here
+OPENAI_MODEL=gpt-5.4-mini
+EMBEDDING_MODEL=text-embedding-3-small
+```
+
+`OPENAI_API_KEY`에는 본인 키를 넣으면 되고, 모델 값은 필요에 따라 변경할 수 있습니다.
+
+### 5. 서버 실행
+
+```bash
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+실행 후 접속 주소:
 
 - Dashboard: `http://127.0.0.1:8000`
-- API Docs: `http://127.0.0.1:8000/docs`
+- Swagger Docs: `http://127.0.0.1:8000/docs`
 
-## Main APIs
+## 참고
 
-- `POST /api/jobs/collect`: 수집 + 전처리 실행
-- `POST /api/jobs/analyze`: 이슈 분석 실행
-- `POST /api/pipeline/run`: 수집부터 분석까지 전체 실행
-- `GET /api/issues`: 이슈 목록 조회
-- `POST /api/issues/{issue_id}/report`: Slack 전송 시도
-
-## Environment Variables
-
-- `SLACK_WEBHOOK_URL`
-- `ENABLE_SCHEDULER=true|false`
-- `COLLECT_INTERVAL_MINUTES`
-- `ANALYZE_INTERVAL_MINUTES`
-
-## Notes
-
-- 현재는 샘플 데이터와 로컬 휴리스틱 기반으로 동작합니다.
-- RAG 계층은 Chroma/FAISS로 교체 가능한 인터페이스로 설계했습니다.
-- OpenAI 같은 LLM API 연동은 `app/services/llm_analyzer.py` 백엔드 계층에서만 추가하면 됩니다.
+- 프론트엔드는 직접 LLM API를 호출하지 않습니다.
+- LLM 호출은 모두 백엔드에서만 수행됩니다.
+- 기본 보고 채널은 웹 대시보드입니다.
+- 배포는 필수가 아니며, 로컬 실행 기준으로 동작하도록 설계되어 있습니다.

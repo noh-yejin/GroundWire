@@ -80,6 +80,15 @@ class IssueRepository:
                 )
                 """
             )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS issue_analysis_cache (
+                    cache_key TEXT PRIMARY KEY,
+                    payload TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                )
+                """
+            )
             conn.commit()
 
     def save_articles(self, articles: list[Article]) -> None:
@@ -248,6 +257,34 @@ class IssueRepository:
                 )
             conn.commit()
 
+    def get_issue_analysis_cache(self, cache_key: str) -> AnalysisResult | None:
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT payload FROM issue_analysis_cache WHERE cache_key = ?",
+                (cache_key,),
+            ).fetchone()
+        if not row:
+            return None
+        return self._deserialize_analysis(json.loads(row[0]))
+
+    def save_issue_analysis_cache(self, cache_key: str, analysis: AnalysisResult) -> None:
+        with self._connect() as conn:
+            conn.execute(
+                """
+                INSERT INTO issue_analysis_cache (cache_key, payload, created_at)
+                VALUES (?, ?, ?)
+                ON CONFLICT(cache_key) DO UPDATE SET
+                    payload = excluded.payload,
+                    created_at = excluded.created_at
+                """,
+                (
+                    cache_key,
+                    json.dumps(self._serialize_analysis(analysis), ensure_ascii=False),
+                    datetime.utcnow().isoformat(),
+                ),
+            )
+            conn.commit()
+
     def list_issues(self) -> list[Issue]:
         with self._connect() as conn:
             rows = conn.execute(
@@ -281,22 +318,7 @@ class IssueRepository:
             "reliability": {
                 **asdict(issue.reliability),
             },
-            "analysis": {
-                "summary": issue.analysis.summary,
-                "keywords": issue.analysis.keywords,
-                "key_signals": issue.analysis.key_signals,
-                "key_points": issue.analysis.key_points,
-                "trend_summary": issue.analysis.trend_summary,
-                "sentiment": issue.analysis.sentiment.value,
-                "market_impact": issue.analysis.market_impact.value,
-                "policy_risk": issue.analysis.policy_risk.value,
-                "volatility_risk": issue.analysis.volatility_risk.value,
-                "risk_points": issue.analysis.risk_points,
-                "grounded": issue.analysis.grounded,
-                "priority": issue.analysis.priority.value,
-                "hold_reason": issue.analysis.hold_reason,
-                "grounding_details": issue.analysis.grounding_details,
-            },
+            "analysis": self._serialize_analysis(issue.analysis),
         }
 
     def _deserialize_issue(self, data: dict) -> Issue:
@@ -340,22 +362,7 @@ class IssueRepository:
                 grounding_details={},
             )
         else:
-            analysis = AnalysisResult(
-                summary=analysis_data["summary"],
-                keywords=analysis_data["keywords"],
-                key_signals=analysis_data.get("key_signals", []),
-                key_points=analysis_data.get("key_points", []),
-                trend_summary=analysis_data.get("trend_summary", "추이 설명이 아직 생성되지 않았습니다."),
-                sentiment=SentimentLabel(analysis_data["sentiment"]),
-                market_impact=ImpactLabel(analysis_data.get("market_impact", analysis_data["sentiment"])),
-                policy_risk=RiskLevel(analysis_data.get("policy_risk", "medium")),
-                volatility_risk=RiskLevel(analysis_data.get("volatility_risk", "medium")),
-                risk_points=analysis_data["risk_points"],
-                grounded=analysis_data["grounded"],
-                priority=IssuePriority(analysis_data.get("priority", "general")),
-                hold_reason=analysis_data.get("hold_reason"),
-                grounding_details=analysis_data.get("grounding_details", {}),
-            )
+            analysis = self._deserialize_analysis(analysis_data)
         return Issue(
             id=data["id"],
             topic=data["topic"],
@@ -366,4 +373,40 @@ class IssueRepository:
             analysis=analysis,
             status=IssueStatus(data["status"]),
             updated_at=datetime.fromisoformat(data["updated_at"]),
+        )
+
+    def _serialize_analysis(self, analysis: AnalysisResult) -> dict:
+        return {
+            "summary": analysis.summary,
+            "keywords": analysis.keywords,
+            "key_signals": analysis.key_signals,
+            "key_points": analysis.key_points,
+            "trend_summary": analysis.trend_summary,
+            "sentiment": analysis.sentiment.value,
+            "market_impact": analysis.market_impact.value,
+            "policy_risk": analysis.policy_risk.value,
+            "volatility_risk": analysis.volatility_risk.value,
+            "risk_points": analysis.risk_points,
+            "grounded": analysis.grounded,
+            "priority": analysis.priority.value,
+            "hold_reason": analysis.hold_reason,
+            "grounding_details": analysis.grounding_details,
+        }
+
+    def _deserialize_analysis(self, analysis_data: dict) -> AnalysisResult:
+        return AnalysisResult(
+            summary=analysis_data["summary"],
+            keywords=analysis_data["keywords"],
+            key_signals=analysis_data.get("key_signals", []),
+            key_points=analysis_data.get("key_points", []),
+            trend_summary=analysis_data.get("trend_summary", "추이 설명이 아직 생성되지 않았습니다."),
+            sentiment=SentimentLabel(analysis_data["sentiment"]),
+            market_impact=ImpactLabel(analysis_data.get("market_impact", analysis_data["sentiment"])),
+            policy_risk=RiskLevel(analysis_data.get("policy_risk", "medium")),
+            volatility_risk=RiskLevel(analysis_data.get("volatility_risk", "medium")),
+            risk_points=analysis_data["risk_points"],
+            grounded=analysis_data["grounded"],
+            priority=IssuePriority(analysis_data.get("priority", "general")),
+            hold_reason=analysis_data.get("hold_reason"),
+            grounding_details=analysis_data.get("grounding_details", {}),
         )

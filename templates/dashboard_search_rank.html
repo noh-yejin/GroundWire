@@ -642,8 +642,8 @@
         border-color: rgba(84, 132, 195, 0.18);
       }
       .summary-chart-card.signal-card {
-        background: linear-gradient(180deg, rgba(241, 252, 250, 0.96), rgba(255, 255, 255, 0.98));
-        border-color: rgba(13, 122, 114, 0.16);
+        background: linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(255, 255, 255, 0.98));
+        border-color: rgba(66, 98, 150, 0.18);
       }
       .summary-chart-card h4,
       .distribution-card h4 {
@@ -872,40 +872,123 @@
         gap: 8px;
         align-content: start;
         min-height: 0;
+        padding-top: 0;
+        overflow: auto;
+        padding-right: 2px;
       }
       .signal-bar-row {
         display: grid;
-        grid-template-columns: 116px 1fr 28px;
+        gap: 7px;
+        padding: 9px 10px 10px;
+        border: 1px solid rgba(58, 90, 138, 0.12);
+        border-radius: 13px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,248,253,0.98));
+        cursor: pointer;
+        transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+      }
+      .signal-bar-row:hover {
+        transform: translateY(-1px);
+        border-color: rgba(58, 90, 138, 0.22);
+        box-shadow: 0 8px 18px rgba(58, 90, 138, 0.08);
+      }
+      .signal-bar-head {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
         gap: 8px;
         align-items: center;
-        min-height: 22px;
+      }
+      .signal-bar-rank {
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.68rem;
+        font-weight: 900;
+        color: #36536f;
+        background: rgba(58, 90, 138, 0.1);
+      }
+      .signal-bar-row.rank-1 {
+        border-color: rgba(41, 116, 183, 0.24);
+        background: linear-gradient(180deg, rgba(242, 248, 255, 1), rgba(233, 244, 255, 0.98));
+      }
+      .signal-bar-row.rank-1 .signal-bar-rank {
+        color: #fff;
+        background: linear-gradient(180deg, #2f73ba, #4d8fd1);
+      }
+      .signal-bar-row.rank-1 .signal-bar-rail span {
+        background: linear-gradient(90deg, #2f73ba, #72a9de);
+      }
+      .signal-bar-row.rank-2 {
+        border-color: rgba(83, 121, 171, 0.22);
+        background: linear-gradient(180deg, rgba(247, 250, 255, 1), rgba(239, 246, 255, 0.96));
+      }
+      .signal-bar-row.rank-2 .signal-bar-rank {
+        color: #284766;
+        background: linear-gradient(180deg, #d9e7f6, #c7d8ec);
+      }
+      .signal-bar-row.rank-2 .signal-bar-rail span {
+        background: linear-gradient(90deg, #5278ab, #86acd2);
+      }
+      .signal-bar-row.rank-3 {
+        border-color: rgba(112, 134, 162, 0.2);
+        background: linear-gradient(180deg, rgba(250, 252, 255, 1), rgba(244, 248, 253, 0.96));
+      }
+      .signal-bar-row.rank-3 .signal-bar-rank {
+        color: #36536f;
+        background: linear-gradient(180deg, #e6edf7, #dbe6f3);
+      }
+      .signal-bar-row.rank-3 .signal-bar-rail span {
+        background: linear-gradient(90deg, #6487b5, #95b6d6);
       }
       .signal-bar-row label {
-        font-size: 0.7rem;
-        color: var(--muted);
+        min-width: 0;
+        font-size: 0.73rem;
+        color: var(--ink);
         font-weight: 800;
+        white-space: normal;
+        line-height: 1.22;
+      }
+      .signal-bar-meta {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        justify-content: flex-end;
+        text-align: right;
+      }
+      .signal-bar-value {
+        font-size: 0.72rem;
+        font-weight: 900;
+        color: #284766;
+      }
+      .signal-bar-share {
+        font-size: 0.64rem;
+        font-weight: 800;
+        color: var(--muted);
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      }
+      .signal-bar-track {
+        display: grid;
+        gap: 4px;
       }
       .signal-bar-rail {
         position: relative;
-        height: 9px;
+        height: 8px;
         border-radius: 999px;
-        background: rgba(18,32,42,0.08);
+        background: rgba(58, 90, 138, 0.1);
         overflow: hidden;
       }
       .signal-bar-rail span {
         position: absolute;
         inset: 0 auto 0 0;
         border-radius: inherit;
-        background: linear-gradient(90deg, #2d6eb3, #0d7a72);
+        background: linear-gradient(90deg, #5678a7, #88b0d3);
       }
-      .signal-bar-value {
-        font-size: 0.7rem;
-        font-weight: 900;
+      .signal-bar-caption {
+        font-size: 0.58rem;
         color: var(--muted);
-        text-align: right;
+        font-weight: 700;
       }
       .metric-fill {
         position: absolute;
@@ -1049,7 +1132,7 @@
         grid-template-columns: 248px minmax(0, 1.04fr) 454px;
         gap: 12px;
         min-height: 0;
-        height: max(86vh, 1080px);
+        height: 100%;
         align-items: stretch;
       }
       .shell-panel,
@@ -1068,8 +1151,9 @@
         height: 100%;
         min-height: 0;
         overflow: auto;
-        padding: 2px 6px 8px 2px;
-        scroll-padding-bottom: 8px;
+        padding: 2px 6px 28px 2px;
+        scroll-padding-bottom: 28px;
+        overscroll-behavior: contain;
       }
       .panel-scroll::-webkit-scrollbar { width: 8px; }
       .panel-scroll::-webkit-scrollbar-thumb {
@@ -1493,6 +1577,11 @@
         color: var(--ink);
         font-size: 0.82rem;
         font-weight: 500;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
       }
       .impact-grid {
         display: grid;
@@ -1580,6 +1669,10 @@
         font-size: 0.78rem;
         line-height: 1.35;
         font-weight: 500;
+      }
+      .detail-line + .detail-line,
+      .detail-summary-line + .detail-summary-line {
+        margin-top: 6px;
       }
       .detail-item a { color: var(--ink); }
       .chart { margin-top: 6px; }
@@ -1697,7 +1790,7 @@
       }
       .single-pane-card,
       .single-pane-card.distribution-card {
-        height: 500px;
+        height: 264px;
         width: 80%;
         justify-self: center;
       }
@@ -1761,7 +1854,7 @@
       .summary-pane.active { display: block; }
       .single-pane-card,
       .single-pane-card.distribution-card {
-        height: 250px;
+        height: 264px;
       }
       .focus-band {
         margin-bottom: 0;
@@ -1835,6 +1928,10 @@
         max-width: none;
         color: rgba(18, 32, 42, 0.62);
         margin-bottom: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
       .focus-meta-strip {
         display: flex;
@@ -1950,11 +2047,21 @@
         display: grid;
         gap: 3px;
       }
+      .focus-point-title {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
       .focus-point-copy small {
         font-size: 0.68rem;
         line-height: 1.1;
         color: rgba(18, 32, 42, 0.52);
         font-weight: 600;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
       .focus-right {
         display: grid;
@@ -2113,8 +2220,11 @@
       .explorer-shell {
         margin-top: 12px;
         display: block;
+        height: calc(100dvh - 40px);
+        min-height: 0;
       }
       .explorer-body {
+        height: 100%;
         min-height: 0;
       }
       .explorer-shell.collapsed {
@@ -2481,9 +2591,48 @@
         };
       }
       function compactPoint(rawValue, maxLength = 34) {
-        const compact = String(rawValue || "").replace(/^[-•]\s*/, "").trim();
+        const compact = String(rawValue || "")
+          .replace(/&nbsp;/gi, " ")
+          .replace(/\u00a0/g, " ")
+          .replace(/\s+/g, " ")
+          .replace(/^[-•]\s*/, "")
+          .trim();
         if (compact.length <= maxLength) return compact;
         return `${compact.slice(0, maxLength).trim()}...`;
+      }
+      function normalizedCompareText(rawValue) {
+        return compactPoint(rawValue, 300)
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .replace(/[.,·!?:;"'`()\[\]{}<>_-]/g, "");
+      }
+      function isDuplicateishText(left, right) {
+        const normalizedLeft = normalizedCompareText(left);
+        const normalizedRight = normalizedCompareText(right);
+        if (!normalizedLeft || !normalizedRight) return false;
+        return normalizedLeft === normalizedRight
+          || normalizedLeft.includes(normalizedRight)
+          || normalizedRight.includes(normalizedLeft);
+      }
+      function formatArticleTitleForDisplay(title, source = "") {
+        let cleaned = compactPoint(title, 300);
+        if (source) {
+          const escaped = source.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          cleaned = cleaned.replace(new RegExp(`\\s*-\\s*${escaped}$`), "").trim();
+        }
+        return cleaned;
+      }
+      function buildFocusPointSubline(issue, article, index) {
+        const point = compactPoint(issue.key_points?.[index] || "", 48);
+        const title = formatArticleTitleForDisplay(article.title, article.source);
+        if (point && !isDuplicateishText(point, title)) return point;
+        const keywords = (issue.keywords || []).slice(0, 2).join(" · ");
+        return compactPoint(
+          keywords
+            ? `${article.source} · ${keywords}`
+            : `${article.source} · ${formatCompactDateTime(article.published_at)}`,
+          30,
+        );
       }
       function buildFocusSparkline(values, tone = "neutral") {
         const safeValues = (values || []).map((value) => Number(value || 0));
@@ -2616,10 +2765,10 @@
           neutral: '핵심 변수 부상',
         };
         const headline = keySignal ? `${topicLabel}, ${keySignal} 부각` : `${topicLabel}, ${impactHeadline[issue.market_impact] || '핵심 이슈 부상'}`;
-        const shortSummary = compactPoint(issue.summary, 118);
+        const shortSummary = compactPoint(issue.summary, 90);
         const relatedArticles = (issue.articles || []).slice(0, 2).map((article, index) => ({
-          title: compactPoint(article.title, 74),
-          sub: compactPoint(issue.key_points?.[index] || `${article.source} · ${formatCompactDateTime(article.published_at)}`, 72),
+          title: compactPoint(formatArticleTitleForDisplay(article.title, article.source), 54),
+          sub: buildFocusPointSubline(issue, article, index),
         }));
         topic.textContent = headline;
         summary.textContent = shortSummary;
@@ -2634,7 +2783,7 @@
           .map((article) => `
             <div class="focus-point">
               <div class="focus-point-copy">
-                <div>${article.title}</div>
+                <div class="focus-point-title">${article.title}</div>
                 <small>${article.sub}</small>
               </div>
             </div>
@@ -2723,7 +2872,7 @@
         const grounding = getGroundingMetrics(issue);
         document.getElementById("detail-topic").textContent = issue.topic;
         document.getElementById("detail-meta").textContent = `${contextLabel} | ${issue.status} | ${issue.priority} | trust ${grounding.issueScore.toFixed(2)} | 검증 ${Math.round(grounding.groundedRatio * 100)}%`;
-        document.getElementById("detail-summary").textContent = issue.summary;
+        renderSentenceBlock(document.getElementById("detail-summary"), issue.detail_summary || issue.summary, "detail-summary-line");
 
         const signals = document.getElementById("detail-signals");
         const keywords = document.getElementById("detail-keywords");
@@ -2791,27 +2940,77 @@
         (issue.key_points || []).forEach((item) => {
           const div = document.createElement("div");
           div.className = "detail-item";
-          div.textContent = compactPoint(item, 44);
+          appendSentenceLines(div, item);
           points.appendChild(div);
         });
         (issue.risk_points || []).forEach((item) => {
           const div = document.createElement("div");
           div.className = "detail-item";
-          div.textContent = item;
+          appendSentenceLines(div, item);
           risks.appendChild(div);
         });
         (grounding.reasons || []).forEach((item) => {
           const div = document.createElement("div");
           div.className = "detail-item";
-          div.textContent = `[검증] ${item}`;
+          appendSentenceLines(div, `[검증] ${item}`);
           risks.appendChild(div);
         });
         (issue.articles || []).forEach((article) => {
           const div = document.createElement("div");
           div.className = "detail-item";
-          div.innerHTML = `<div class="tiny">${article.source} | 게시 ${article.published_at}</div><div style="margin-top:5px;"><a href="${article.url}" target="_blank" rel="noreferrer">${article.title}</a></div>`;
+          const meta = document.createElement("div");
+          meta.className = "tiny";
+          meta.textContent = `${article.source} | 게시 ${article.published_at}`;
+          const linkWrap = document.createElement("div");
+          linkWrap.style.marginTop = "5px";
+          const link = document.createElement("a");
+          link.href = article.url;
+          link.target = "_blank";
+          link.rel = "noreferrer";
+          appendSentenceLines(link, article.title);
+          linkWrap.appendChild(link);
+          div.append(meta, linkWrap);
           articles.appendChild(div);
         });
+      }
+
+      function decodeHtmlText(value) {
+        const textarea = document.createElement("textarea");
+        textarea.innerHTML = String(value ?? "");
+        return textarea.value;
+      }
+
+      function normalizeDetailText(value) {
+        return decodeHtmlText(value)
+          .replace(/&nbsp;/gi, " ")
+          .replace(/\u00a0/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function splitDetailSentences(value) {
+        const text = normalizeDetailText(value);
+        if (!text) return [];
+        return text
+          .split(/(?<=[.!?。！？…])\s+/)
+          .map((part) => part.trim())
+          .filter(Boolean);
+      }
+
+      function appendSentenceLines(container, value, lineClassName = "detail-line") {
+        const sentences = splitDetailSentences(value);
+        const parts = sentences.length ? sentences : [normalizeDetailText(value)];
+        parts.filter(Boolean).forEach((part) => {
+          const line = document.createElement("div");
+          line.className = lineClassName;
+          line.textContent = part;
+          container.appendChild(line);
+        });
+      }
+
+      function renderSentenceBlock(container, value, lineClassName = "detail-line") {
+        container.innerHTML = "";
+        appendSentenceLines(container, value, lineClassName);
       }
 
       function clearDetailPanel() {
@@ -3207,13 +3406,25 @@
           signalBars.innerHTML = '<div class="tiny">현재 두드러진 신호가 많지 않습니다.</div>';
         } else {
           const max = Math.max(...topSignals.map(([, count]) => count), 1);
-          signalBars.innerHTML = topSignals.map(([label, count]) => `
-            <button class="signal-bar-row" type="button" data-summary-signal="${label}" style="border:none;background:none;padding:0;text-align:left;">
-              <label>${label}</label>
-              <div class="signal-bar-rail"><span style="width:${Math.round((count / max) * 100)}%;"></span></div>
-              <div class="signal-bar-value">${count}</div>
+          const total = topSignals.reduce((sum, [, count]) => sum + Number(count || 0), 0) || 1;
+          signalBars.innerHTML = topSignals.map(([label, count], index) => {
+            const share = Math.round((count / total) * 100);
+            return `
+            <button class="signal-bar-row rank-${Math.min(index + 1, 3)}" type="button" data-summary-signal="${label}" aria-label="${label} 신호 ${count}건">
+              <div class="signal-bar-head">
+                <span class="signal-bar-rank">${index + 1}</span>
+                <label>${label}</label>
+                <div class="signal-bar-meta">
+                  <span class="signal-bar-value">${count}건</span>
+                  <span class="signal-bar-share">${share}%</span>
+                </div>
+              </div>
+              <div class="signal-bar-track">
+                <div class="signal-bar-rail"><span style="width:${Math.max(12, Math.round((count / max) * 100))}%;"></span></div>
+                <div class="signal-bar-caption">상위 신호 내 상대 빈도</div>
+              </div>
             </button>
-          `).join("");
+          `}).join("");
           signalBars.querySelectorAll("[data-summary-signal]").forEach((button) => {
             button.addEventListener("click", () => {
               const label = button.dataset.summarySignal;

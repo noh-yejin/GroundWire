@@ -19,6 +19,7 @@ from app.services.clustering import canonicalize_topic
 from app.services.pipeline import NewsPipeline
 from app.services.scheduler import SchedulerService
 from app.services.slack_reporter import send_issue
+from app.services.ui_localizer import ui_localizer
 
 repository = IssueRepository()
 pipeline = NewsPipeline(repository=repository)
@@ -208,17 +209,18 @@ def _serialize_dashboard_issues(issues: list) -> list[dict]:
         payload.append(
             {
                 "id": issue.id,
-                "topic": _display_topic(issue.topic),
+                "topic": ui_localizer.localize_label(_display_topic(issue.topic), allow_remote=False),
                 "status": issue.status.value,
                 "priority": issue.analysis.priority.value,
-                "keywords": issue.analysis.keywords,
-                "key_signals": issue.analysis.key_signals,
-                "summary": issue.analysis.summary,
+                "keywords": [ui_localizer.localize_label(item, allow_remote=False) for item in issue.analysis.keywords],
+                "key_signals": [ui_localizer.localize_label(item, allow_remote=False) for item in issue.analysis.key_signals],
+                "summary": ui_localizer.localize_summary(issue.analysis.summary, allow_remote=False),
+                "detail_summary": ui_localizer.localize_detail(issue.analysis.summary, allow_remote=False),
                 "sentiment": issue.analysis.sentiment.value,
                 "reliability": issue.reliability.value,
-                "key_points": issue.analysis.key_points,
-                "trend_summary": issue.analysis.trend_summary,
-                "risk_points": issue.analysis.risk_points,
+                "key_points": [ui_localizer.localize_point(item, max_chars=54, allow_remote=False) for item in issue.analysis.key_points],
+                "trend_summary": ui_localizer.localize_summary(issue.analysis.trend_summary, allow_remote=False),
+                "risk_points": [ui_localizer.localize_point(item, max_chars=54, allow_remote=False) for item in issue.analysis.risk_points],
                 "market_impact": issue.analysis.market_impact.value,
                 "policy_risk": issue.analysis.policy_risk.value,
                 "volatility_risk": issue.analysis.volatility_risk.value,
@@ -251,12 +253,12 @@ def _serialize_issue_cards(issues: list) -> list[dict]:
     return [
         {
             "id": issue.id,
-            "topic": _display_topic(issue.topic),
+            "topic": ui_localizer.localize_label(_display_topic(issue.topic), allow_remote=False),
             "status": issue.status.value,
             "reliability": issue.reliability.value,
-            "keywords": issue.keywords,
-            "summary": issue.analysis.summary,
-            "key_signals": issue.analysis.key_signals,
+            "keywords": [ui_localizer.localize_label(item, allow_remote=False) for item in issue.keywords],
+            "summary": ui_localizer.localize_summary(issue.analysis.summary, allow_remote=False),
+            "key_signals": [ui_localizer.localize_label(item, allow_remote=False) for item in issue.analysis.key_signals],
             "priority": issue.analysis.priority.value,
             "sentiment": issue.analysis.sentiment.value,
             "market_impact": issue.analysis.market_impact.value,
@@ -302,6 +304,8 @@ def _serialize_grounding_for_ui(grounding_details: dict | None) -> dict:
         "claims": claims,
         "grounding": details.get("grounding", {}),
         "grounded_summary": details.get("grounded_summary", {}),
+        "decision": details.get("decision", {}),
+        "llm": details.get("llm", {}),
     }
 
 
