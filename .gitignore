@@ -1,9 +1,13 @@
 # env 파일
 .env
+.env.local
 
 # python
 __pycache__/
 *.pyc
+.pytest_cache/
+.Python
+.coverage
 
 # mac
 .DS_Store
@@ -11,6 +15,16 @@ __pycache__/
 # venv
 env/
 venv/
+.venv/
 
 # vscode
 .vscode/
+
+docs/
+
+# sqlite / runtime db
+*.db
+*.sqlite3
+
+# logs
+*.log
