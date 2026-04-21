@@ -5,7 +5,7 @@ GroundWire는 실시간 뉴스 데이터를 기반으로, **검토 가능한 이
 
 
 **근거 기반 검증 + 신뢰도 평가 + LLM 분석**을 통해  
-이슈를 `READY` / `HOLD` 상태로 분류합니다.
+이슈를 `READY` / `HOLD` 상태로 분류합니다.  
 
 
 ## 📊 Demo
@@ -37,7 +37,7 @@ GroundWire는 실시간 뉴스 데이터를 기반으로, **검토 가능한 이
 
 <p align="center">
   <img src="./assets/keywords.png" width="55%">
-</p>
+</p>  
 
 ## 🛠 기술 스택
 
@@ -46,7 +46,7 @@ GroundWire는 실시간 뉴스 데이터를 기반으로, **검토 가능한 이
 ![OpenAI](https://img.shields.io/badge/OpenAI-gpt--5.4--mini-412991?logo=openai&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-Storage-003B57?logo=sqlite&logoColor=white)
 ![Jinja2](https://img.shields.io/badge/Jinja2-Templates-B41717?logo=jinja&logoColor=white)
-![APScheduler](https://img.shields.io/badge/APScheduler-Scheduler-4B5563)
+![APScheduler](https://img.shields.io/badge/APScheduler-Scheduler-4B5563)  
 
 
 ## 🚀 핵심 기능
@@ -58,14 +58,14 @@ GroundWire는 실시간 뉴스 데이터를 기반으로, **검토 가능한 이
 - **신뢰도 기반 필터링**
 - **LLM + grounding 기반 분석**
 - `READY` / `HOLD` 판정
-- 웹 대시보드 시각화
+- 웹 대시보드 시각화  
 
 
 ## 🔄 데이터 플로우
 
 RSS 수집 → 전처리 → 원문 URL 복원 → 기사 저장 → 이슈 클러스터링 →  
 RAG 기반 근거 수집 → 신뢰도/grounding 분석 → READY/HOLD 판정 → 대시보드 반영
-
+  
 
 ## ⚙️ 실행 방법
 
