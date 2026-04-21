@@ -87,7 +87,7 @@ def search_ranking_preview(request: Request) -> HTMLResponse:
     search_rankings = _build_search_rankings(issues, runtime_status=runtime_status)
     return templates.TemplateResponse(
         request,
-        "dashboard_search_rank.html",
+        "dashboard.html",
         {
             "issues": issues,
             "priority_issues": priority_issues,

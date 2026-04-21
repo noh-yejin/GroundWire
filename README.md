@@ -90,7 +90,7 @@ pip install -r requirements.txt
 ```
 ### 4. 환경 변수 설정
 기본 실행 설정은 `.env`에 작성합니다.
-```python
+```bash
 OPENAI_API_KEY=your_api_key_here
 OPENAI_MODEL=model_here
 EMBEDDING_MODEL=embedding_model_here

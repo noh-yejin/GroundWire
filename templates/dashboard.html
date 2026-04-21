@@ -2786,13 +2786,26 @@
           </div>
         `).join("");
       }
+      function getFeaturedIssueRank(issue) {
+        const grounding = getGroundingMetrics(issue);
+        const updatedAt = new Date(issue.updated_at);
+        const updatedAtMs = Number.isNaN(updatedAt.getTime()) ? 0 : updatedAt.getTime();
+        const ageHours = updatedAtMs ? Math.max((Date.now() - updatedAtMs) / (60 * 60 * 1000), 0) : 999;
+        const recencyBoost = Math.max(0, 0.18 - (ageHours * 0.03));
+        const claimBoost = Math.min(grounding.readyClaims * 0.025, 0.08);
+        const groundedBoost = Math.min(grounding.groundedRatio * 0.12, 0.12);
+        return grounding.issueScore + recencyBoost + claimBoost + groundedBoost;
+      }
       function getFeaturedIssue() {
-        const readyIssues = sortIssues(
-          issuesData
-            .filter((issue) => issue.status === "READY")
-            .filter(isQualifiedCoreIssue)
-            .filter(issueMatchesKeyword)
-        );
+        const readyIssues = issuesData
+          .filter((issue) => issue.status === "READY")
+          .filter(isQualifiedCoreIssue)
+          .filter(issueMatchesKeyword)
+          .sort((a, b) => {
+            if (a.priority !== b.priority) return a.priority === "priority" ? -1 : 1;
+            return getFeaturedIssueRank(b) - getFeaturedIssueRank(a)
+              || new Date(b.updated_at) - new Date(a.updated_at);
+          });
         const priorityReady = readyIssues.filter((issue) => issue.priority === "priority");
         const featured = priorityReady[0] || readyIssues[0] || null;
         if (featured) {
