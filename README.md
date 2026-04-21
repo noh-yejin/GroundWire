@@ -1,5 +1,5 @@
 # 📑 GroundWire
-## **Trust-First Real-Time News Issue Analysis Dashboard**
+### **Reliability-based News Issue Analysis Dashboard**
 
 GroundWire는 실시간 뉴스 데이터를 기반으로, **검토 가능한 이슈만 선별해 구조화하는 분석 대시보드**입니다.
 
@@ -59,13 +59,18 @@ GroundWire는 실시간 뉴스 데이터를 기반으로, **검토 가능한 이
 - **LLM + grounding 기반 분석**
 - `READY` / `HOLD` 판정
 - 웹 대시보드 시각화  
-
+  
 
 ## 🔄 데이터 플로우
-```text
-RSS 수집 → 전처리 → 원문 URL 복원 → 기사 저장 → 이슈 클러스터링 →  
-RAG 기반 근거 수집 → 신뢰도/grounding 분석 → READY/HOLD 판정 → 대시보드 반영
-```
+
+RSS 수집 → 전처리 → 원문 URL 복원 → 기사 저장  
+
+→ 이슈 클러스터링 → RAG 기반 근거 수집  
+
+→ 신뢰도 / grounding 분석 → READY / HOLD 판정  
+
+→ 대시보드 반영  
+
 
 ## ⚙️ 실행 방법
 
